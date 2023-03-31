@@ -81,3 +81,32 @@ FROM covid_data_project..CovidDeaths
 WHERE continent IS NOT NULL
 GROUP BY Continent
 --ORDER BY Total_Death_Count DESC
+
+--Queries to be exported to Excel and used in Tableau Visualisation Dashboard
+
+--1
+SELECT SUM(new_cases) as Total_Cases, SUM(new_deaths) as Total_Deaths, SUM(new_deaths)/SUM(new_cases)*100 as Death_Percentage
+FROM covid_data_project..CovidDeaths
+WHERE continent IS NOT NULL
+ORDER BY 1,2
+
+--2
+SELECT Location, SUM(New_Deaths) as Total_Death_Count
+FROM covid_data_project..CovidDeaths
+WHERE continent IS NULL 
+AND location NOT IN ('World', 'European Union', 'International')
+AND location NOT LIKE '%income%'
+GROUP BY location
+ORDER BY Total_Death_Count DESC
+
+--3
+SELECT Location, Population, MAX(total_cases) as Highest_Infection_Count, MAX((total_cases/population))*100 as Percent_Population_Infected
+FROM covid_data_project..CovidDeaths
+GROUP BY location, population
+ORDER BY Percent_Population_Infected DESC
+
+--4
+SELECT Location, Population, Date, MAX(total_cases) as Highest_Infection_Count, MAX((total_cases/population))*100 as Percent_Population_Infected
+FROM covid_data_project..CovidDeaths
+GROUP BY location, population, date
+ORDER BY Percent_Population_Infected DESC
